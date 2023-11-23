@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Empty from "./Empty";
 import ChatList from "./Chatlist/ChatList";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/redux-hook";
-import { onAuthStateChanged, updateCurrentUser } from "firebase/auth";
-import { firebaseAuth } from "@/utils/FirebaseConfig";
 import axios from "axios";
-import { CHECK_USER_ROUTE } from "@/utils/ApiRoutes";
-import { setUserInfo } from "@/store/userSlice";
+import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE } from "@/utils/ApiRoutes";
 import Chat from "./Chat/Chat";
 
 const MainPage = () => {
   // const router = useRouter();
-  // const userInfo = useAppSelector((state) => state.user.userInfo);
+  const userInfo = useAppSelector((state) => state.user.userInfo);
   const currentChatUser = useAppSelector((state) => state.user.currentChatUser);
 
-  // console.log("userinfo", userInfo);
-
-  // useEffect(() => {
-  //     if (!isNewUser && userInfo?.email) {
-  //       router.push("/");
-  //     } else if (isNewUser && !userInfo?.email) {
-  //       router.push("/login");
-  //     }
-  //   }, [isNewUser, router, userInfo?.email]);
+  useEffect(() => {
+    const getMessages = async () => {
+      const { data } = await axios.get(
+        `${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`
+      );
+      console.log({ data });
+    };
+    if (currentChatUser?.id) {
+      getMessages();
+    }
+  }, [currentChatUser?.id, userInfo?.id]);
 
   return (
     <div className="flex items-center justify-center pt-5">
