@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-scrollbar::-webkit-scrollbar {
+  /* height: 8px !important; */
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #ced0d1;
+}
+
+
+
+/* @layer components { */
+  /* main */
+  .flex-center {
+    @apply flex items-center justify-center
+  }
+/* } */
+

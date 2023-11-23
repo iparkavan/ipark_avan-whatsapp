@@ -1,0 +1,52 @@
+{
+  "users": {
+    "A": [
+      {
+        "id": 12,
+        "name": "Avan",
+        "email": "parkavsuriya@gmail.com",
+        "profilePicture": "https://lh3.googleusercontent.com/a/ACg8ocJMB2wD0v-vPSoCBc44uWwOzb4-XVMOODy9BBWshXDL1A=s96-c",
+        "about": "Hahaha"
+      }
+    ],
+    "P": [
+      {
+        "id": 6,
+        "name": "Park Avan",
+        "email": "ipark.avan@gmail.com",
+        "profilePicture": "https://lh3.googleusercontent.com/a/ACg8ocJ7yyAXKtHme-s27JoefO0m5g_Gn6CB4arc0m7VC4GVDg=s96-c",
+        "about": "Coding..."
+      },
+      {
+        "id": 7,
+        "name": "Park Avan",
+        "email": "parkavsuriya46@gmail.com",
+        "profilePicture": "https://lh3.googleusercontent.com/a/ACg8ocIfagNfWqnoPgm0f19aGQeqJYVnaX1VeBOhpYALEXz8tss=s96-c",
+        "about": "window"
+      },
+      {
+        "id": 9,
+        "name": "Parkavi Mani",
+        "email": "parkavisuriya@gmail.com",
+        "profilePicture": "https://lh3.googleusercontent.com/a/ACg8ocJCQLffYhTGqLkXCU0TEWPMvOQO3bqnWJyW9xIqJDH4=s96-c",
+        "about": "Studing"
+      },
+      {
+        "id": 11,
+        "name": "Parkiii",
+        "email": "parkiii1997@gmail.com",
+        "profilePicture": "https://lh3.googleusercontent.com/a/ACg8ocJjK3Pb24C72wRuDkV2I4hJTf8Pwq7xOwywyg-Jqq3BNA=s96-c",
+        "about": "cool"
+      }
+    ],
+    "S": [
+      {
+        "id": 8,
+        "name": "Suriya Prakasam",
+        "email": "suriyaprakasam17@gmail.com",
+        "profilePicture": "https://lh3.googleusercontent.com/a/ACg8ocKHFHDlS011Mp7soKTmxOY5BaB7M8UYg3KvQQmoMkqi=s96-c",
+        "about": "I'm Busy"
+      }
+    ]
+  }
+}
