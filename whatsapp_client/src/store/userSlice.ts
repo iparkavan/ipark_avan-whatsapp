@@ -21,6 +21,15 @@ interface userPorps {
     profilePicture: string 
     status: string
   } | undefined
+  messages: {
+    createdAt: string
+    id: number
+    message: string
+    messageStatus: string
+    receiverId: number
+    senderId: number
+    type: string
+  }[]
 }
 
 // Define the initial state using that type
@@ -28,7 +37,8 @@ const initialState: userPorps = {
   userInfo: undefined,
   newUser: false,
   contactsPage: false,
-  currentChatUser: undefined
+  currentChatUser: undefined,
+  messages: []
 }
 
 export const userSlice = createSlice({
@@ -46,11 +56,14 @@ export const userSlice = createSlice({
     },
     setCurrentChatUser: (state, action) => {
       state.currentChatUser = action.payload
+    },
+    setMessages: (state, action) => {
+      state.messages = action.payload
     }
   },
 })
 
-export const {setNewUser, setUserInfo, setAllContactsPage, setCurrentChatUser } = userSlice.actions
+export const {setNewUser, setUserInfo, setAllContactsPage, setCurrentChatUser, setMessages } = userSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value

@@ -6,23 +6,31 @@ import { useAppDispatch, useAppSelector } from "@/store/redux-hook";
 import axios from "axios";
 import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE } from "@/utils/ApiRoutes";
 import Chat from "./Chat/Chat";
+import { setMessages } from "@/store/userSlice";
 
 const MainPage = () => {
   // const router = useRouter();
   const userInfo = useAppSelector((state) => state.user.userInfo);
   const currentChatUser = useAppSelector((state) => state.user.currentChatUser);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getMessages = async () => {
-      const { data } = await axios.get(
+      const { data: messages } = await axios.get(
         `${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`
       );
-      console.log({ data });
+      const chats = messages.messages;
+      // console.log(chats)
+      dispatch(
+        setMessages({
+          chats,
+        })
+      );
     };
     if (currentChatUser?.id) {
       getMessages();
     }
-  }, [currentChatUser?.id, userInfo?.id]);
+  }, [currentChatUser?.id, dispatch, userInfo?.id]);
 
   return (
     <div className="flex items-center justify-center pt-5">

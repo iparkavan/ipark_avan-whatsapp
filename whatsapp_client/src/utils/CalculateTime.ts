@@ -1,4 +1,4 @@
-export const calculateTime = (inputDateStr) => {
+export const calculateTime = (inputDateStr: string) => {
   // Assuming the input date string is in UTC format
   const inputDate = new Date(inputDateStr);
 

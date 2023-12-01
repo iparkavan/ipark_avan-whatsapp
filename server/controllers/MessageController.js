@@ -46,7 +46,6 @@ const getMessaages = async (req, res, next) => {
         id: "asc",
       },
     });
-
     const unreadMessages = [];
 
     messages.forEach((message, index) => {
@@ -54,7 +53,7 @@ const getMessaages = async (req, res, next) => {
         message.messageStatus !== "read" &&
         message.senderId === parseInt(to)
       ) {
-        message[index].messageStatus = "read";
+        messages[index].messageStatus = "read";
         unreadMessages.push(message.id);
       }
     });
