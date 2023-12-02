@@ -28,16 +28,16 @@ function ChatContainer() {
                 key={message.id}
                 className={`${
                   message.senderId === currentChatUser?.id
-                    ? "justify-start"
-                    : "justify-end"
+                    ? "flex justify-start"
+                    : "flex justify-end"
                 }`}
               >
                 {message.type === "text" && (
                   <div
                     className={`mx-12 inline-block px-3 py-1 rounded-md ${
                       message.senderId === currentChatUser?.id
-                        ? "#d9fdd3"
-                        : "bg-white"
+                        ? "bg-white"
+                        : "bg-[#d9fdd3]"
                     }`}
                   >
                     <span className="break-all">{message.message}</span>
