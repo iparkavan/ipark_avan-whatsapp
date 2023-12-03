@@ -1,18 +1,66 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Empty from "./Empty";
 import ChatList from "./Chatlist/ChatList";
 // import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/redux-hook";
 import axios from "axios";
-import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE } from "@/utils/ApiRoutes";
+import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE, HOST } from "@/utils/ApiRoutes";
 import Chat from "./Chat/Chat";
-import { setMessages } from "@/store/userSlice";
+import { addMessage, setMessages, setSocket } from "@/store/userSlice";
+import { io, Socket } from "socket.io-client";
+
+interface ServerToClientEvents {
+  noArg: () => void;
+  basicEmit: (a: number, b: string, c: Buffer) => void;
+  withAck: (d: string, callback: (e: number) => void) => void;
+}
+
+interface ClientToServerEvents {
+  hello: () => void;
+}
+
+interface InterServerEvents {
+  ping: () => void;
+}
+
+interface SocketData {
+  name: string;
+  age: number;
+}
 
 const MainPage = () => {
   // const router = useRouter();
   const userInfo = useAppSelector((state) => state.user.userInfo);
   const currentChatUser = useAppSelector((state) => state.user.currentChatUser);
   const dispatch = useAppDispatch();
+  const [socketEvent, setSocketEvent] = useState(false);
+
+  const socket: Socket = useRef<ServerToClientEvents>();
+
+  useEffect(() => {
+    if (userInfo) {
+      // socket = io(HOST);
+      // const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(HOST);
+      // socket.emit("add-user", userInfo.id)
+      socket.current = io(HOST);
+      socket.current.emit("add-user", userInfo.id);
+      dispatch(setSocket({ socket }));
+    }
+  }, [dispatch, userInfo]);
+
+  useEffect(() => {
+    if (socket.current && socketEvent) {
+    socket?.current?.on("msg-receive", (data: any) => {
+      console.log(data);
+      dispatch(addMessage({ ...data.message }));
+    });
+    setSocketEvent(true);
+    }
+  }, [dispatch, socketEvent]);
+
+  // socket.current?.on("msg-receive", (data: any) => {
+  //   console.log(data)
+  // })
 
   useEffect(() => {
     const getMessages = async () => {

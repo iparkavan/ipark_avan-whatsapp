@@ -30,6 +30,7 @@ interface userPorps {
     senderId: number
     type: string
   }[]
+  socket: undefined
 }
 
 // Define the initial state using that type
@@ -38,7 +39,8 @@ const initialState: userPorps = {
   newUser: false,
   contactsPage: false,
   currentChatUser: undefined,
-  messages: []
+  messages: [],
+  socket: undefined
 }
 
 export const userSlice = createSlice({
@@ -59,11 +61,18 @@ export const userSlice = createSlice({
     },
     setMessages: (state, action) => {
       state.messages = action.payload
+    },
+    setSocket: (state, action) => {
+      state.socket = action.payload
+      console.log(state.socket)
+    },
+    addMessage: (state, action) => {
+      state.messages = [...state.messages, action.payload]
     }
   },
 })
 
-export const {setNewUser, setUserInfo, setAllContactsPage, setCurrentChatUser, setMessages } = userSlice.actions
+export const {setNewUser, setUserInfo, setAllContactsPage, setCurrentChatUser, setMessages, setSocket, addMessage } = userSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value
