@@ -45,17 +45,11 @@ function MessageBar() {
         from: userInfo?.id,
         message,
       });
-      console.log(data.message);
       socket?.socket?.current.emit("send-msg", {
         to: currentChatUser?.id,
         from: userInfo?.id,
         message: data.message,
       });
-      // socket.emit("send-msg", {
-      //   to: currentChatUser?.id,
-      //   from: userInfo?.id,
-      //   message: data.message,
-      // });
 
       setMessage("");
     } catch (error) {

@@ -35,7 +35,7 @@ const MainPage = () => {
   const dispatch = useAppDispatch();
   const [socketEvent, setSocketEvent] = useState(false);
 
-  const socket: Socket = useRef<ServerToClientEvents>();
+  const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -50,11 +50,11 @@ const MainPage = () => {
 
   useEffect(() => {
     if (socket.current && socketEvent) {
-    socket?.current?.on("msg-receive", (data: any) => {
-      console.log(data);
-      dispatch(addMessage({ ...data.message }));
-    });
-    setSocketEvent(true);
+      socket?.current?.on("msg-receive", (data: any) => {
+        console.log(data);
+        dispatch(addMessage({ ...data.message }));
+      });
+      setSocketEvent(true);
     }
   }, [dispatch, socketEvent]);
 

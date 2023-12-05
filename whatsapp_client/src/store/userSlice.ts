@@ -64,7 +64,6 @@ export const userSlice = createSlice({
     },
     setSocket: (state, action) => {
       state.socket = action.payload
-      console.log(state.socket)
     },
     addMessage: (state, action) => {
       state.messages = [...state.messages, action.payload]

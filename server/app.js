@@ -33,17 +33,18 @@ global.onlineUsers = new Map();
 io.on("connection", (socket) => {
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
-    // console.log(userId);
     onlineUsers.set(userId, socket.id);
+    console.log(global.onlineUsers);
   });
   socket.on("send-msg", (data) => {
-    
-    // if (sendUserSocket) {
-    console.log("cocomelon");
-    socket.to(onlineUsers.get(data.to)).emit("msg-receive", {
-      from: data.from,
-      message: data.message,
-    });
-    // }
+    const sendUserSocket = onlineUsers.get(data.to);
+    console.log(data);
+    console.log("prong", sendUserSocket);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("msg-receive", {
+        from: data.from,
+        message: data.message,
+      });
+    }
   });
 });
