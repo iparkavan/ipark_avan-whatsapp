@@ -8,6 +8,7 @@ import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE, HOST } from "@/utils/ApiRoutes";
 import Chat from "./Chat/Chat";
 import { addMessage, setMessages, setSocket } from "@/store/userSlice";
 import { io, Socket } from "socket.io-client";
+import { SET_MESSAGES } from "@/store/action.type";
 
 interface ServerToClientEvents {
   noArg: () => void;
@@ -39,28 +40,22 @@ const MainPage = () => {
 
   useEffect(() => {
     if (userInfo) {
-      // socket = io(HOST);
-      // const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(HOST);
-      // socket.emit("add-user", userInfo.id)
       socket.current = io(HOST);
-      socket.current.emit("add-user", userInfo.id);
+      socket?.current.emit("add-user", userInfo.id);
       dispatch(setSocket({ socket }));
     }
   }, [dispatch, userInfo]);
 
   useEffect(() => {
-    if (socket.current && socketEvent) {
-      socket?.current?.on("msg-receive", (data: any) => {
-        console.log(data);
+    if (socket.current && !socketEvent) {
+      socket.current.on("msg-receive", (data: any) => {
+        alert("write");
+        console.log("write somethting");
         dispatch(addMessage({ ...data.message }));
       });
       setSocketEvent(true);
     }
   }, [dispatch, socketEvent]);
-
-  // socket.current?.on("msg-receive", (data: any) => {
-  //   console.log(data)
-  // })
 
   useEffect(() => {
     const getMessages = async () => {
@@ -68,12 +63,8 @@ const MainPage = () => {
         `${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`
       );
       const chats = messages.messages;
-      // console.log(chats)
-      dispatch(
-        setMessages({
-          chats,
-        })
-      );
+
+      dispatch(setMessages({ type: SET_MESSAGES, chats: chats }));
     };
     if (currentChatUser?.id) {
       getMessages();

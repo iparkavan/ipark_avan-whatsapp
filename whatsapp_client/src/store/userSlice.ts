@@ -30,7 +30,7 @@ interface userPorps {
     senderId: number
     type: string
   }[]
-  socket: undefined
+  socket: any
 }
 
 // Define the initial state using that type
@@ -60,13 +60,20 @@ export const userSlice = createSlice({
       state.currentChatUser = action.payload
     },
     setMessages: (state, action) => {
-      state.messages = action.payload
+      if (action.payload.type) {
+        state.messages = action.payload.chats
+      } 
+      // if (action.payload.type) {
+      //   state.messages = [...state.messages, action.payload.addMessage]
+      //   console.log(state.messages)
+      // }
     },
     setSocket: (state, action) => {
       state.socket = action.payload
     },
     addMessage: (state, action) => {
-      state.messages = [...state.messages, action.payload]
+      state.messages = [...state.messages, action.payload.addMessage]
+      // console.log(state.messages)
     }
   },
 })

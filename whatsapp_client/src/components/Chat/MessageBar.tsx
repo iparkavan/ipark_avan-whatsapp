@@ -1,4 +1,6 @@
+import { ADD_MESSAGES } from "@/store/action.type";
 import { useAppDispatch, useAppSelector } from "@/store/redux-hook";
+import { addMessage, setMessages } from "@/store/userSlice";
 import { ADD_MESSAGE_ROUTE, HOST } from "@/utils/ApiRoutes";
 import axios from "axios";
 import React, { useState } from "react";
@@ -8,24 +10,6 @@ import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
 import { Socket, io } from "socket.io-client";
 
-interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: number) => void) => void;
-}
-
-interface ClientToServerEvents {
-  hello: () => void;
-}
-
-interface InterServerEvents {
-  ping: () => void;
-}
-
-interface SocketData {
-  name: string;
-  age: number;
-}
 
 function MessageBar() {
   const userInfo = useAppSelector((state) => state.user.userInfo);
@@ -33,7 +17,7 @@ function MessageBar() {
   const socket = useAppSelector((state) => state.user.socket);
   const dispatch = useAppDispatch();
 
-  // console.log("SOCKET", socket.socket.current);
+  // console.log("SOCKET", socket.socket);
 
   const [message, setMessage] = useState("");
 
@@ -45,11 +29,20 @@ function MessageBar() {
         from: userInfo?.id,
         message,
       });
+      
       socket?.socket?.current.emit("send-msg", {
         to: currentChatUser?.id,
         from: userInfo?.id,
         message: data.message,
       });
+
+      dispatch(
+        addMessage({
+          // type: ADD_MESSAGES,
+          addMessage: { ...data.message },
+          fromSelf: true,
+        })
+      );
 
       setMessage("");
     } catch (error) {

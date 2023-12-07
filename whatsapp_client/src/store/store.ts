@@ -1,11 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userSlice from './userSlice'
+import { persistStore, persistReducer } from "redux-persist";
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
     user: userSlice
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 })
+
+const persistor = persistStore(store);
+export { store, persistor };
+
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

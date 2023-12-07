@@ -17,14 +17,15 @@ function ChatContainer() {
   const currentChatUser = useAppSelector((state) => state.user.currentChatUser);
   const userInfo = useAppSelector((state) => state.user.userInfo);
   const messages = useAppSelector((state) => state.user.messages);
-  // console.log("All-messages", messages);
+
+  console.log("All-messages", messages);
 
   return (
     <div className="bg-chat-background bg-[#efeae2] bg-fixed w-full h-full custom-scrollbar">
       <div className="w-full h-[83vh] relative overflow-auto">
         <div className="flex w-full">
           <div className="flex flex-col justify-end w-full gap-1 overflow-auto">
-            {messages.chats?.map((message: message, index: message) => (
+            {messages.map((message: message, index: message) => (
               <div
                 key={message.id}
                 className={`${
