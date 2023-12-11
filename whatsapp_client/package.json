@@ -22,7 +22,7 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "axios": "^1.6.1",
-    "emoji-picker-react": "^4.4.9",
+    "emoji-picker-react": "^4.5.16",
     "eslint": "^8",
     "eslint-config-next": "14.0.2",
     "firebase": "^9.23.0",

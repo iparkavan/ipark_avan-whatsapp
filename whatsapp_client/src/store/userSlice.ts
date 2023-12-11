@@ -63,24 +63,16 @@ export const userSlice = createSlice({
       if (action.payload.type) {
         state.messages = action.payload.chats
       } 
-      // if (action.payload.type) {
-      //   state.messages = [...state.messages, action.payload.addMessage]
-      //   console.log(state.messages)
-      // }
     },
     setSocket: (state, action) => {
       state.socket = action.payload
     },
     addMessage: (state, action) => {
       state.messages = [...state.messages, action.payload.addMessage]
-      // console.log(state.messages)
     }
   },
 })
 
 export const {setNewUser, setUserInfo, setAllContactsPage, setCurrentChatUser, setMessages, setSocket, addMessage } = userSlice.actions
-
-// Other code such as selectors can use the imported `RootState` type
-// export const selectCount = (state: RootState) => state.counter.value
 
 export default userSlice.reducer

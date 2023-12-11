@@ -10,29 +10,30 @@ import { addMessage, setMessages, setSocket } from "@/store/userSlice";
 import { io, Socket } from "socket.io-client";
 import { SET_MESSAGES } from "@/store/action.type";
 
-interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: number) => void) => void;
-}
+// interface ServerToClientEvents {
+//   noArg: () => void;
+//   basicEmit: (a: number, b: string, c: Buffer) => void;
+//   withAck: (d: string, callback: (e: number) => void) => void;
+// }
 
-interface ClientToServerEvents {
-  hello: () => void;
-}
+// interface ClientToServerEvents {
+//   hello: () => void;
+// }
 
-interface InterServerEvents {
-  ping: () => void;
-}
+// interface InterServerEvents {
+//   ping: () => void;
+// }
 
-interface SocketData {
-  name: string;
-  age: number;
-}
+// interface SocketData {
+//   name: string;
+//   age: number;
+// }
 
 const MainPage = () => {
   // const router = useRouter();
   const userInfo = useAppSelector((state) => state.user.userInfo);
   const currentChatUser = useAppSelector((state) => state.user.currentChatUser);
+  // const socket = useAppSelector((state) => state.user.socket);
   const dispatch = useAppDispatch();
   const [socketEvent, setSocketEvent] = useState(false);
 
@@ -41,21 +42,29 @@ const MainPage = () => {
   useEffect(() => {
     if (userInfo) {
       socket.current = io(HOST);
-      socket?.current.emit("add-user", userInfo.id);
+      socket.current.emit("add-user", userInfo.id);
       dispatch(setSocket({ socket }));
     }
-  }, [dispatch, userInfo]);
+  }, [dispatch, userInfo, socket]);
 
   useEffect(() => {
+    socket.current = io(HOST);
     if (socket.current && !socketEvent) {
-      socket.current.on("msg-receive", (data: any) => {
-        alert("write");
-        console.log("write somethting");
+      // alert("king");
+      // console.log(
+      //   socket.current.on("meg-receive", (data) => {
+      //     return { data };
+      //   })
+      // );
+      socket.current.on("msg-receive", (data) => {
+        alert("Kong");
+        console.log(data);
+        console.log("king_kong");
         dispatch(addMessage({ ...data.message }));
       });
       setSocketEvent(true);
     }
-  }, [dispatch, socketEvent]);
+  }, [dispatch, socketEvent, socket]);
 
   useEffect(() => {
     const getMessages = async () => {

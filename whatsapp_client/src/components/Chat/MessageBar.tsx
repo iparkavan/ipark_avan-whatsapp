@@ -3,13 +3,27 @@ import { useAppDispatch, useAppSelector } from "@/store/redux-hook";
 import { addMessage, setMessages } from "@/store/userSlice";
 import { ADD_MESSAGE_ROUTE, HOST } from "@/utils/ApiRoutes";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
 import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
 import { Socket, io } from "socket.io-client";
+import EmojiPicker, {
+  Emoji,
+  EmojiClickData,
+  EmojiStyle,
+} from "emoji-picker-react";
+import { GetEmojiUrl } from "emoji-picker-react/dist/components/emoji/BaseEmojiProps";
 
+interface emojiDataProps {
+  unified: string;
+  emojiStyle?: EmojiStyle;
+  size?: number;
+  lazyLoad?: boolean;
+  getEmojiUrl?: GetEmojiUrl;
+  emojiUrl?: string;
+}
 
 function MessageBar() {
   const userInfo = useAppSelector((state) => state.user.userInfo);
@@ -19,7 +33,36 @@ function MessageBar() {
 
   // console.log("SOCKET", socket.socket);
 
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<string | undefined>(undefined);
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+
+  const emojiPickerRef = useRef(null);
+
+  const handleEmojiModal = () => {
+    setShowEmojiPicker(!showEmojiPicker);
+  };
+
+  const handleEmojiClick = (event: any) => {
+    setMessage((prevMessage) => (prevMessage += event.emoji));
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (event: any) => {
+      if (event.target.id !== "emoji-open") {
+        if (
+          emojiPickerRef.current &&
+          !emojiPickerRef.current.contains(event.target)
+        ) {
+          setShowEmojiPicker(false);
+        }
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   // const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(HOST);
   const sendMessage = async () => {
@@ -29,7 +72,7 @@ function MessageBar() {
         from: userInfo?.id,
         message,
       });
-      
+
       socket?.socket?.current.emit("send-msg", {
         to: currentChatUser?.id,
         from: userInfo?.id,
@@ -38,7 +81,7 @@ function MessageBar() {
 
       dispatch(
         addMessage({
-          // type: ADD_MESSAGES,
+          type: ADD_MESSAGES,
           addMessage: { ...data.message },
           fromSelf: true,
         })
@@ -56,7 +99,16 @@ function MessageBar() {
         <BsEmojiSmile
           className="cursor-pointer text-xl text-[#54656f]"
           title="Emoji"
+          id="emoji-open"
+          onClick={handleEmojiModal}
         />
+        {showEmojiPicker && (
+          <div className="absolute bottom-24 left-42 z-40" ref={emojiPickerRef}>
+            <EmojiPicker
+              onEmojiClick={(event, emoji) => handleEmojiClick(event)}
+            />
+          </div>
+        )}
         <ImAttachment
           className="cursor-pointer text-xl text-[#54656f]"
           title="Attach File"

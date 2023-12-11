@@ -3,15 +3,15 @@ import { calculateTime } from "@/utils/CalculateTime";
 import React from "react";
 import MessageStatus from "../common/MessageStatus";
 
-interface message {
-  createdAt: string;
-  id: number;
-  message: string;
-  messageStatus: string;
-  receiverId: number;
-  senderId: number;
-  type: string;
-}
+// interface message {
+//   createdAt: string;
+//   id: number;
+//   message: string;
+//   messageStatus: string;
+//   receiverId: number;
+//   senderId: number;
+//   type: string;
+// }
 
 function ChatContainer() {
   const currentChatUser = useAppSelector((state) => state.user.currentChatUser);
@@ -25,7 +25,7 @@ function ChatContainer() {
       <div className="w-full h-[83vh] relative overflow-auto">
         <div className="flex w-full">
           <div className="flex flex-col justify-end w-full gap-1 overflow-auto">
-            {messages.map((message: message, index: message) => (
+            {messages.map((message, index) => (
               <div
                 key={message.id}
                 className={`${
