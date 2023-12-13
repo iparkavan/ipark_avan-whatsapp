@@ -74,19 +74,18 @@ const getMessaages = async (req, res, next) => {
 };
 
 const addImageMessage = async (req, res, next) => {
-  console.log(req.file);
   try {
     if (req.file) {
       const date = Date.now();
       let fileName = "uploads/images" + date + req.file.originalname;
-      renameSync(fileName);
-      console.log(fileName, req.file.path);
+      renameSync(req.file.path, fileName);
+      console.log(fileName, req.file.originalname);
 
       const prisma = getPrismaInstance();
       const { from, to } = req.query;
 
       if (from && to) {
-        const message = await prisma.message.create({
+        const message = await prisma.messages.create({
           data: {
             message: fileName,
             sender: { connect: { id: parseInt(from) } },
@@ -100,7 +99,7 @@ const addImageMessage = async (req, res, next) => {
     }
     return res.status(400).send("Image is required");
   } catch (error) {
-    next(error);
+    console.log("Invalid errorsss", error);
   }
 };
 

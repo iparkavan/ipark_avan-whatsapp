@@ -48,10 +48,7 @@ const MainPage = () => {
   }, [dispatch, userInfo, socket]);
 
   useEffect(() => {
-    // socket.current = io(HOST);
-
     if (socket.current && !socketEvent) {
-      alert("hi");
       socket.current.on("msg-receive", (data) => {
         alert("Kong");
         console.log(data);

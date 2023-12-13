@@ -32,10 +32,10 @@ io.on("connection", (socket) => {
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id);
-    console.log(global.onlineUsers);
+    console.log("onlineUsers", global.onlineUsers);
   });
   socket.on("send-msg", (data) => {
-    console.log(data.to)
+    console.log(data.to);
     const sendUserSocket = onlineUsers.get(data.to);
     console.log(data);
     console.log("prong", sendUserSocket);

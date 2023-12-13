@@ -143,7 +143,9 @@ function MessageBar() {
           })
         );
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
