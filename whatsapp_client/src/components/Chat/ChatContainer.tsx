@@ -18,7 +18,7 @@ function ChatContainer() {
   const userInfo = useAppSelector((state) => state.user.userInfo);
   const messages = useAppSelector((state) => state.user.messages);
 
-  console.log("All-messages", messages);
+  // console.log("All-messages", messages);
 
   return (
     <div className="bg-chat-background bg-[#efeae2] bg-fixed w-full h-full custom-scrollbar">

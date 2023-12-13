@@ -12,6 +12,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use("/uploads/images", express.static("/uploads/images"));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
@@ -33,6 +35,7 @@ io.on("connection", (socket) => {
     console.log(global.onlineUsers);
   });
   socket.on("send-msg", (data) => {
+    console.log(data.to)
     const sendUserSocket = onlineUsers.get(data.to);
     console.log(data);
     console.log("prong", sendUserSocket);

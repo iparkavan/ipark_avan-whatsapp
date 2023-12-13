@@ -1,7 +1,11 @@
 import { ADD_MESSAGES } from "@/store/action.type";
 import { useAppDispatch, useAppSelector } from "@/store/redux-hook";
 import { addMessage, setMessages } from "@/store/userSlice";
-import { ADD_MESSAGE_ROUTE, HOST } from "@/utils/ApiRoutes";
+import {
+  ADD_IMAGE_MESSAGE_ROUTE,
+  ADD_MESSAGE_ROUTE,
+  HOST,
+} from "@/utils/ApiRoutes";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
@@ -15,6 +19,7 @@ import EmojiPicker, {
   EmojiStyle,
 } from "emoji-picker-react";
 import { GetEmojiUrl } from "emoji-picker-react/dist/components/emoji/BaseEmojiProps";
+import PhotoPicker from "../common/PhotoPicker";
 
 interface emojiDataProps {
   unified: string;
@@ -35,8 +40,9 @@ function MessageBar() {
 
   const [message, setMessage] = useState<string | undefined>(undefined);
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+  const [grabPhoto, setGrabPhoto] = useState(false);
 
-  const emojiPickerRef = useRef(null);
+  const emojiPickerRef = useRef<HTMLInputElement>(null);
 
   const handleEmojiModal = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -93,6 +99,53 @@ function MessageBar() {
     }
   };
 
+  useEffect(() => {
+    if (grabPhoto) {
+      const data = document.getElementById("photo-picker");
+      data?.click();
+      document.body.onfocus = (e) => {
+        setTimeout(() => {
+          setGrabPhoto(false);
+        }, 1000);
+      };
+    }
+  }, [grabPhoto]);
+
+  const photoPickerChangeHandler = async (
+    e: React.ChangeEvent<HTMLInputElement> | FileList
+  ) => {
+    try {
+      const file = e.target.files[0];
+      const formData = new FormData();
+      formData.append("image", file);
+      const response = await axios.post(ADD_IMAGE_MESSAGE_ROUTE, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        params: {
+          from: userInfo?.id,
+          to: currentChatUser?.id,
+        },
+      });
+
+      if (response.status === 201) {
+        socket?.socket?.current.emit("send-msg", {
+          to: currentChatUser?.id,
+          from: userInfo?.id,
+          message: response.data.message,
+        });
+
+        dispatch(
+          addMessage({
+            type: ADD_MESSAGES,
+            addMessage: { ...response.data.message },
+            fromSelf: true,
+          })
+        );
+      }
+    } catch (error) {}
+  };
+
   return (
     <div className="flex items-center justify-center h-32 px-4 gap-6">
       <div className="flex gap-6">
@@ -112,8 +165,10 @@ function MessageBar() {
         <ImAttachment
           className="cursor-pointer text-xl text-[#54656f]"
           title="Attach File"
+          onClick={() => setGrabPhoto(true)}
         />
       </div>
+      {grabPhoto && <PhotoPicker onChange={photoPickerChangeHandler} />}
       <div className="w-full flex items-center rounded-lg h-10">
         <input
           type="text"

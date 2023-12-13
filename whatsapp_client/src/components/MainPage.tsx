@@ -40,31 +40,26 @@ const MainPage = () => {
   const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
+    socket.current = io(HOST);
     if (userInfo) {
-      socket.current = io(HOST);
       socket.current.emit("add-user", userInfo.id);
       dispatch(setSocket({ socket }));
     }
   }, [dispatch, userInfo, socket]);
 
   useEffect(() => {
-    socket.current = io(HOST);
+    // socket.current = io(HOST);
+
     if (socket.current && !socketEvent) {
-      // alert("king");
-      // console.log(
-      //   socket.current.on("meg-receive", (data) => {
-      //     return { data };
-      //   })
-      // );
+      alert("hi");
       socket.current.on("msg-receive", (data) => {
         alert("Kong");
         console.log(data);
-        console.log("king_kong");
         dispatch(addMessage({ ...data.message }));
       });
       setSocketEvent(true);
     }
-  }, [dispatch, socketEvent, socket]);
+  }, [dispatch, socketEvent]);
 
   useEffect(() => {
     const getMessages = async () => {
