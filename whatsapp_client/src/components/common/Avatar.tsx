@@ -124,8 +124,7 @@ function Avatar({ type, image, setImage }: props) {
             <Image
               src={image}
               alt="Avatar"
-              className="rounded-full object-cover
-            "
+              className="rounded-full object-cover"
               fill
             />
           </div>

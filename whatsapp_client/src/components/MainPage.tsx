@@ -10,25 +10,6 @@ import { addMessage, setMessages, setSocket } from "@/store/userSlice";
 import { io, Socket } from "socket.io-client";
 import { SET_MESSAGES } from "@/store/action.type";
 
-// interface ServerToClientEvents {
-//   noArg: () => void;
-//   basicEmit: (a: number, b: string, c: Buffer) => void;
-//   withAck: (d: string, callback: (e: number) => void) => void;
-// }
-
-// interface ClientToServerEvents {
-//   hello: () => void;
-// }
-
-// interface InterServerEvents {
-//   ping: () => void;
-// }
-
-// interface SocketData {
-//   name: string;
-//   age: number;
-// }
-
 const MainPage = () => {
   // const router = useRouter();
   const userInfo = useAppSelector((state) => state.user.userInfo);
@@ -40,17 +21,17 @@ const MainPage = () => {
   const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
-    socket.current = io(HOST);
     if (userInfo) {
+      socket.current = io(HOST);
       socket.current.emit("add-user", userInfo.id);
-      dispatch(setSocket({ socket }));
+      dispatch(setSocket(socket));
     }
   }, [dispatch, userInfo, socket]);
 
   useEffect(() => {
     if (socket.current && !socketEvent) {
       socket.current.on("msg-receive", (data) => {
-        alert("Kong");
+        alert("Kong"); 
         console.log(data);
         dispatch(addMessage({ ...data.message }));
       });

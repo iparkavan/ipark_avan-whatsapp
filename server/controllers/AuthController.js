@@ -24,7 +24,6 @@ const checkUser = async (req, res, next) => {
 const onboardUser = async (req, res, next) => {
   try {
     const { name, email, image: profilePicture, about } = req.body;
-    console.log(name, email, profilePicture, about);
 
     if (!name || !email || !profilePicture) {
       return res.send("Name, Email and Display picture are required");

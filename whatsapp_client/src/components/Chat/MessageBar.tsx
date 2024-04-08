@@ -7,7 +7,7 @@ import {
   HOST,
 } from "@/utils/ApiRoutes";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
 import { ImAttachment } from "react-icons/im";
@@ -20,6 +20,12 @@ import EmojiPicker, {
 } from "emoji-picker-react";
 import { GetEmojiUrl } from "emoji-picker-react/dist/components/emoji/BaseEmojiProps";
 import PhotoPicker from "../common/PhotoPicker";
+import CaptureAudio from "../common/CaptureAudio";
+
+// import dynamic from "next/dynamic";
+// const CaptureAudio = dynamic(() => import("../common/CaptureAudio"), {
+//   ssr: false,
+// });
 
 interface emojiDataProps {
   unified: string;
@@ -33,16 +39,15 @@ interface emojiDataProps {
 function MessageBar() {
   const userInfo = useAppSelector((state) => state.user.userInfo);
   const currentChatUser = useAppSelector((state) => state.user.currentChatUser);
-  const socket = useAppSelector((state) => state.user.socket);
+  const socketing = useAppSelector((state) => state.user.socket);
   const dispatch = useAppDispatch();
-
-  // console.log("SOCKET", socket.socket);
 
   const [message, setMessage] = useState<string | undefined>(undefined);
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const [grabPhoto, setGrabPhoto] = useState(false);
+  const [showAudioRecorder, setShowAudioRecorder] = useState(false);
 
-  const emojiPickerRef = useRef<HTMLInputElement>(null);
+  const emojiPickerRef = useRef<HTMLInputElement | null>(null);
 
   const handleEmojiModal = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -79,7 +84,13 @@ function MessageBar() {
         message,
       });
 
-      socket?.socket?.current.emit("send-msg", {
+      // socket?.socket?.current.emit("send-msg", {
+      //   to: currentChatUser?.id,
+      //   from: userInfo?.id,
+      //   message: data.message,
+      // });
+
+      socketing.current.emit("send-msg", {
         to: currentChatUser?.id,
         from: userInfo?.id,
         message: data.message,
@@ -87,7 +98,6 @@ function MessageBar() {
 
       dispatch(
         addMessage({
-          type: ADD_MESSAGES,
           addMessage: { ...data.message },
           fromSelf: true,
         })
@@ -111,9 +121,7 @@ function MessageBar() {
     }
   }, [grabPhoto]);
 
-  const photoPickerChangeHandler = async (
-    e: React.ChangeEvent<HTMLInputElement> | FileList
-  ) => {
+  const photoPickerChangeHandler = async (e: any) => {
     try {
       const file = e.target.files[0];
       const formData = new FormData();
@@ -129,7 +137,7 @@ function MessageBar() {
       });
 
       if (response.status === 201) {
-        socket?.socket?.current.emit("send-msg", {
+        socketing.current.emit("send-msg", {
           to: currentChatUser?.id,
           from: userInfo?.id,
           message: response.data.message,
@@ -137,7 +145,6 @@ function MessageBar() {
 
         dispatch(
           addMessage({
-            type: ADD_MESSAGES,
             addMessage: { ...response.data.message },
             fromSelf: true,
           })
@@ -150,49 +157,61 @@ function MessageBar() {
 
   return (
     <div className="flex items-center justify-center h-32 px-4 gap-6">
-      <div className="flex gap-6">
-        <BsEmojiSmile
-          className="cursor-pointer text-xl text-[#54656f]"
-          title="Emoji"
-          id="emoji-open"
-          onClick={handleEmojiModal}
-        />
-        {showEmojiPicker && (
-          <div className="absolute bottom-24 left-42 z-40" ref={emojiPickerRef}>
-            <EmojiPicker
-              onEmojiClick={(event, emoji) => handleEmojiClick(event)}
+      {!showAudioRecorder && (
+        <>
+          <div className="flex gap-6">
+            <BsEmojiSmile
+              className="cursor-pointer text-xl text-[#54656f]"
+              title="Emoji"
+              id="emoji-open"
+              onClick={handleEmojiModal}
+            />
+            {showEmojiPicker && (
+              <div
+                className="absolute bottom-24 left-42 z-40"
+                ref={emojiPickerRef}
+              >
+                <EmojiPicker
+                  onEmojiClick={(event, emoji) => handleEmojiClick(event)}
+                />
+              </div>
+            )}
+            <ImAttachment
+              className="cursor-pointer text-xl text-[#54656f]"
+              title="Attach File"
+              onClick={() => setGrabPhoto(true)}
             />
           </div>
-        )}
-        <ImAttachment
-          className="cursor-pointer text-xl text-[#54656f]"
-          title="Attach File"
-          onClick={() => setGrabPhoto(true)}
-        />
-      </div>
+          <div className="w-full flex items-center rounded-lg h-10">
+            <input
+              type="text"
+              placeholder="Type a message"
+              className="bg-[#ffffff] text-sm focus:outline-none h-10 rounded-lg px-5 py-4 w-full"
+              onChange={(e) => setMessage(e.target.value)}
+              value={message}
+            />
+          </div>
+          <div className="flex-center w-10">
+            <button className="pr-4">
+              {message?.length ? (
+                <MdSend
+                  className="cursor-pointer text-xl text-[#54656f]"
+                  title="Send Message"
+                  onClick={sendMessage}
+                />
+              ) : (
+                <FaMicrophone
+                  className="cursor-pointer text-xl text-[#54656f]"
+                  title="Record"
+                  onClick={() => setShowAudioRecorder(true)}
+                />
+              )}
+            </button>
+          </div>
+        </>
+      )}
       {grabPhoto && <PhotoPicker onChange={photoPickerChangeHandler} />}
-      <div className="w-full flex items-center rounded-lg h-10">
-        <input
-          type="text"
-          placeholder="Type a message"
-          className="bg-[#ffffff] text-sm focus:outline-none h-10 rounded-lg px-5 py-4 w-full"
-          onChange={(e) => setMessage(e.target.value)}
-          value={message}
-        />
-      </div>
-      <div className="flex-center w-10">
-        <button>
-          <MdSend
-            className="cursor-pointer text-xl text-[#54656f]"
-            title="Send Message"
-            onClick={sendMessage}
-          />
-          {/* <FaMicrophone
-              className="cursor-pointer text-xl text-[#54656f]"
-              title="Record"
-            /> */}
-        </button>
-      </div>
+      {showAudioRecorder && <CaptureAudio hide={setShowAudioRecorder} />}
     </div>
   );
 }
