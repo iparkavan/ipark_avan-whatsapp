@@ -1,8 +1,15 @@
+import { useAppDispatch, useAppSelector } from "@/store/redux-hook";
+import { setFilteredContacts } from "@/store/userSlice";
 import React from "react";
 import { BiSearchAlt2 } from "react-icons/bi";
 import { IoFilterOutline } from "react-icons/io5";
 
 function SearchBar() {
+  const dispatch = useAppDispatch();
+  const filteredContacts = useAppSelector(
+    (state) => state.user.filteredContacts
+  );
+
   return (
     <div className="bg-[#ffffff] flex py-3 pl-3 items-center gap-3 h-12 border border-gray-100">
       <div className="bg-[#f0f2f5] flex items-center gap-5 px-3 py-1 rounded-lg flex-grow">
@@ -14,6 +21,8 @@ function SearchBar() {
             type="text"
             placeholder="Search or start new chat"
             className="bg-transparent text-sm focus:outline-none w-full"
+            // value={"lk"}
+            onChange={(e) => dispatch(setFilteredContacts(e.target.value))}
           />
         </div>
       </div>

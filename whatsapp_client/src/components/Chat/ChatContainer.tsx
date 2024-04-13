@@ -26,7 +26,7 @@ function ChatContainer() {
     <div className="bg-chat-background bg-[#efeae2] bg-fixed w-full h-full custom-scrollbar">
       <div className="w-full h-[83vh] relative overflow-auto">
         <div className="flex w-full">
-          <div className="flex flex-col justify-end w-full gap-1 overflow-auto">
+          <div className="flex flex-col justify-end w-full gap-1 overflow-auto p-4">
             {messages.map((message: messageProps, index) => (
               <div
                 key={message?.id}

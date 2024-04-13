@@ -1,7 +1,7 @@
 import { useAppDispatch } from "@/store/redux-hook";
 import { setAllContactsPage } from "@/store/userSlice";
 import { GET_ALL_CONTACTS } from "@/utils/ApiRoutes";
-import axios from "axios";
+import axios, { all } from "axios";
 import { ValueOf } from "next/dist/shared/lib/constants";
 import React, { useEffect, useState } from "react";
 import { BiArrowBack, BiSearchAlt2 } from "react-icons/bi";
@@ -18,7 +18,23 @@ interface contactsInfoProps {
 
 function ContactsList() {
   const [allContacts, setAllContacts] = useState([]);
+  const [searchTerms, setSearchTerms] = useState("");
+  const [searchContacts, setSearchContacts] = useState([]);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (searchTerms.length) {
+      const filteredAllContacts: any = {};
+      Object.keys(allContacts).forEach((key: any) => {
+        filteredAllContacts[key] = allContacts[key].filter((obj: any) =>
+          obj.name.toLowerCase().includes(searchTerms.toLocaleLowerCase())
+        );
+      });
+      setSearchContacts(filteredAllContacts);
+    } else {
+      setSearchContacts(allContacts);
+    }
+  }, [allContacts, searchTerms, searchTerms.length]);
 
   useEffect(() => {
     const getContacts = async () => {
@@ -27,6 +43,7 @@ function ContactsList() {
           data: { users },
         } = await axios.get(GET_ALL_CONTACTS);
         setAllContacts(users);
+        setSearchContacts(users);
       } catch (error) {
         console.log(error);
       }
@@ -59,24 +76,29 @@ function ContactsList() {
               type="text"
               placeholder="Search Contacts"
               className="bg-transparent text-sm focus:outline-none w-full"
+              onChange={(e) => setSearchTerms(e.target.value)}
             />
           </div>
         </div>
       </div>
 
       <div className="bg-white h-full overflow-auto w-full custom-scrollbar">
-        {Object.entries(allContacts).map(([initialLetter, userList]) => {
+        {Object.entries(searchContacts).map(([initialLetter, userList]) => {
           return (
-            <div key={Date.now() + initialLetter}>
-              <div className="pl-10 py-10 text-[#008069]">{initialLetter}</div>
-              {userList.map((contact: contactsInfoProps) => (
-                <ChatLIstItem
-                  key={contact.id}
-                  contact={contact}
-                  isContactPage={true}
-                />
-              ))}
-            </div>
+            userList.length > 0 && (
+              <div key={Date.now() + initialLetter}>
+                <div className="pl-10 py-10 text-[#008069]">
+                  {initialLetter}
+                </div>
+                {userList.map((contact: contactsInfoProps) => (
+                  <ChatLIstItem
+                    key={contact.id}
+                    contact={contact}
+                    isContactPage={true}
+                  />
+                ))}
+              </div>
+            )
           );
         })}
       </div>

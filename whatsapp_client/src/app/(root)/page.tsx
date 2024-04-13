@@ -1,10 +1,11 @@
 "use client";
 
+import VideoCall from "@/components/Call/VideoCall";
+import VoiceCall from "@/components/Call/VoiceCall";
 import Chat from "@/components/Chat/Chat";
+import SearchMessages from "@/components/Chat/SearchMessages";
 import ChatList from "@/components/Chatlist/ChatList";
 import Empty from "@/components/Empty";
-import MainPage from "@/components/MainPage";
-import Main from "@/components/MainPage";
 import { SET_MESSAGES } from "@/store/action.type";
 import { useAppDispatch, useAppSelector } from "@/store/redux-hook";
 import {
@@ -32,6 +33,9 @@ export default function Home() {
   const [socketEvent, setSocketEvent] = useState(false);
   const socket = useRef<Socket | undefined>(undefined);
   const socketing = useAppSelector((state) => state.user.socket);
+  const messageSearch = useAppSelector((state) => state.user.messagesSearch);
+  const { voiceCall, videoCall, incomingVideoCall, incomingVoiceCall } =
+    useAppSelector((state) => state.user);
 
   const [redirectLogin, setRedirectLogin] = useState(false);
 
@@ -104,16 +108,41 @@ export default function Home() {
   }, [currentChatUser?.id, dispatch, userInfo?.id]);
 
   return (
-    <main className="bg-[#e0e0dd] w-full h-screen">
-      <div className="bg-[#00a884] w-screen h-32">
-        {/* <MainPage /> */}
-        <div className="flex items-center justify-center pt-5">
-          <div className="grid grid-cols-main h-[96vh] w-[94vw] max-h-[98vh] max-w-[95vw] overflow-hidden bg-[#f0f2f5] rounded-md">
-            <ChatList />
-            {currentChatUser ? <Chat /> : <Empty />}
-          </div>
+    <>
+      {voiceCall && (
+        <div className="h-screen w-screen max-h-full overflow-hidden">
+          <VoiceCall />
         </div>
-      </div>
-    </main>
+      )}
+      {videoCall && (
+        <div className="h-screen w-screen max-h-full overflow-hidden">
+          <VideoCall />
+        </div>
+      )}
+      {!videoCall && !voiceCall && (
+        <main className="bg-[#e0e0dd] w-full h-screen">
+          <div className="bg-[#00a884] w-screen h-32">
+            {/* <MainPage /> */}
+            <div className="flex items-center justify-center pt-5">
+              <div className="grid grid-cols-main h-[96vh] w-[94vw] max-h-[98vh] max-w-[95vw] overflow-hidden bg-[#f0f2f5] rounded-md">
+                <ChatList />
+                {currentChatUser ? (
+                  <div
+                    className={
+                      messageSearch ? "grid grid-cols-2" : " grid-cols-2"
+                    }
+                  >
+                    <Chat />
+                    {messageSearch && <SearchMessages />}
+                  </div>
+                ) : (
+                  <Empty />
+                )}
+              </div>
+            </div>
+          </div>
+        </main>
+      )}
+    </>
   );
 }

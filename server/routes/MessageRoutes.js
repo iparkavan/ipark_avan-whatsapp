@@ -4,6 +4,7 @@ const {
   getMessaages,
   addImageMessage,
   addAudioMessage,
+  getInitialContactWithMessages,
 } = require("../controllers/MessageController");
 const multer = require("multer");
 
@@ -16,5 +17,6 @@ router.post("/add-message", addMessage);
 router.get("/get-messages/:from/:to", getMessaages);
 router.post("/add-image-message", uploadImage.single("image"), addImageMessage);
 router.post("/add-audio-message", upload.single("audio"), addAudioMessage);
+router.get("/get-initial-contacts/:from", getInitialContactWithMessages);
 
 module.exports = router;

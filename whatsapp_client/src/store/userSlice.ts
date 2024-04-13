@@ -30,7 +30,39 @@ interface userPorps {
     senderId: number
     type: string
   }[]
-  socket: any
+  socket: any,
+  messagesSearch: boolean
+  userContacts: { 
+    id: any; 
+    name?: string; 
+    email?: string; 
+    about?: string; 
+    profilePicture?: string; 
+  }[]
+  onlineUser: userPorps[]
+  filteredContacts: {}[],
+  voiceCall: {
+    id: number
+    name: string
+    email: string
+    profilePicture: string 
+    status: string
+    type: string
+    callType: string
+    roomId: number
+  } ,
+  videoCall:  {
+    id: number
+    name: string
+    email: string
+    profilePicture: string 
+    status: string
+    type: string
+    callType: string
+    roomId: number
+  } 
+  incomingVoiceCall: undefined,
+  incomingVideoCall: undefined,
 }
 
 // Define the initial state using that type
@@ -40,7 +72,16 @@ const initialState: userPorps = {
   contactsPage: false,
   currentChatUser: undefined,
   messages: [],
-  socket: undefined
+  socket: undefined,
+  messagesSearch: false,
+  userContacts: [],
+  onlineUsers: [],
+  filteredContacts: [],
+  voiceCall: undefined,
+  videoCall: undefined,
+  incomingVoiceCall: undefined,
+  incomingVideoCall: undefined,
+
 }
 
 export const userSlice = createSlice({
@@ -70,10 +111,59 @@ export const userSlice = createSlice({
     },
     addMessage: (state, action) => {
       state.messages = [...state.messages, action.payload.addMessage]
-    }
+    },
+    setMessagesSearch: (state, action) => {
+      state.messagesSearch = !state.messagesSearch
+    },
+    setUserContacts: (state, action) => {
+      state.userContacts = action.payload
+    },
+    setOnlineUsers: (state, action) => {
+      state.onlineUser = action.payload
+    },
+    setFilteredContacts: (state, action) => {
+      const filteredContacts = state.userContacts.filter((contact) => contact.name?.toLocaleLowerCase().includes(action.payload.toLocaleLowerCase()))
+      state.filteredContacts = filteredContacts
+    },
+    setVoiceCall: (state, action) => {
+      state.voiceCall = action.payload
+    },
+    setVideoCall: (state, action) => {
+      console.log("action",action.payload)
+      state.videoCall = action.payload
+    },
+    setIncomingVoiceCall: (state, action) => {
+      state.incomingVoiceCall = action.payload
+    },
+    setIncomingVideoCall: (state, action) => {
+      state.incomingVideoCall = action.payload
+    },
+    setEndCall: (state, action) => {
+      state.voiceCall = undefined
+      state.videoCall= undefined
+      state.incomingVoiceCall = undefined
+      state.incomingVideoCall = undefined
+    },
   },
 })
 
-export const {setNewUser, setUserInfo, setAllContactsPage, setCurrentChatUser, setMessages, setSocket, addMessage } = userSlice.actions
+export const {
+  setNewUser, 
+  setUserInfo, 
+  setAllContactsPage, 
+  setCurrentChatUser, 
+  setMessages, 
+  setSocket, 
+  addMessage, 
+  setMessagesSearch,
+  setOnlineUsers,
+  setUserContacts,
+  setFilteredContacts,
+  setVoiceCall,
+  setVideoCall,
+  setIncomingVoiceCall, 
+  setIncomingVideoCall, 
+  setEndCall
+} = userSlice.actions
 
 export default userSlice.reducer
