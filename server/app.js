@@ -39,12 +39,54 @@ io.on("connection", (socket) => {
     // console.log("newData", data.message.message);
     const sendUserSocket = onlineUsers.get(data.to);
     // console.log(data);
-    console.log("prong", data.to, sendUserSocket);
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit("msg-receive", {
         from: data.from,
         message: data.message,
       });
+    }
+  });
+
+  socket.on("outgoing-voice-call", (voice) => {
+    const sendUserSocket = onlineUsers.get(voice.to);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("incoming-voice-call", {
+        from: voice.from,
+        roomId: voice.roomId,
+        callType: voice.callType,
+      });
+    }
+  });
+
+  socket.on("outgoing-video-call", (video) => {
+    const sendUserSocket = onlineUsers.get(video.to);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("incoming-video-call", {
+        from: video.from,
+        roomId: video.roomId,
+        callType: video.callType,
+      });
+    }
+  });
+
+  socket.on("reject-voice-call", (voice) => {
+    const sendUserSocket = onlineUsers.get(voice.from);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("voice-call-rejected");
+    }
+  });
+
+  socket.on("reject-video-call", (video) => {
+    const sendUserSocket = onlineUsers.get(video.from);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("video-call-rejected");
+    }
+  });
+
+  socket.on("accept-incoming-call", ({ id }) => {
+    const sendUserSocket = onlineUsers.get(id);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("accepted-call");
     }
   });
 });

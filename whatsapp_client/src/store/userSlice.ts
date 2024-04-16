@@ -46,23 +46,33 @@ interface userPorps {
     name: string
     email: string
     profilePicture: string 
-    status: string
-    type: string
-    callType: string
+    type: "out-going" | "in-coming";
+    callType: "voice" | "video";
     roomId: number
-  } ,
+  } | undefined
   videoCall:  {
     id: number
     name: string
     email: string
     profilePicture: string 
-    status: string
-    type: string
-    callType: string
+    type: "out-going" | "in-coming";
+    callType: "voice" | "video";
     roomId: number
-  } 
-  incomingVoiceCall: undefined,
-  incomingVideoCall: undefined,
+  } | undefined
+  incomingVoiceCall: {
+    callType: "voice" | "video";
+    id:number
+    name: string
+    profilePicture: string
+    roomId: number
+  } | undefined,
+  incomingVideoCall: {
+    callType: "voice" | "video";
+    id:number
+    name: string
+    profilePicture: string 
+    roomId: number
+  } | undefined,
 }
 
 // Define the initial state using that type
@@ -129,7 +139,6 @@ export const userSlice = createSlice({
       state.voiceCall = action.payload
     },
     setVideoCall: (state, action) => {
-      console.log("action",action.payload)
       state.videoCall = action.payload
     },
     setIncomingVoiceCall: (state, action) => {

@@ -6,10 +6,15 @@ import Chat from "@/components/Chat/Chat";
 import SearchMessages from "@/components/Chat/SearchMessages";
 import ChatList from "@/components/Chatlist/ChatList";
 import Empty from "@/components/Empty";
+import IncomingVideoCall from "@/components/common/IncomingVideoCall";
+import IncomingVoiceCall from "@/components/common/IncomingVoiceCall";
 import { SET_MESSAGES } from "@/store/action.type";
 import { useAppDispatch, useAppSelector } from "@/store/redux-hook";
 import {
   addMessage,
+  setEndCall,
+  setIncomingVideoCall,
+  setIncomingVoiceCall,
   setMessages,
   setSocket,
   setUserInfo,
@@ -89,6 +94,41 @@ export default function Home() {
         // console.log("data on main page", data.message);
         dispatch(addMessage({ addMessage: { ...data.message } }));
       });
+
+      socketing.current.on(
+        "incoming-voice-call",
+        ({ from, roomId, callType }) => {
+          dispatch(
+            setIncomingVoiceCall({
+              ...from,
+              roomId,
+              callType,
+            })
+          );
+        }
+      );
+
+      socketing.current.on(
+        "incoming-video-call",
+        ({ from, roomId, callType }) => {
+          dispatch(
+            setIncomingVideoCall({
+              ...from,
+              roomId,
+              callType,
+            })
+          );
+        }
+      );
+
+      socketing.current.on("voice-call-rejected", () => {
+        dispatch(setEndCall({}));
+      });
+
+      socketing.current.on("video-call-rejected", () => {
+        dispatch(setEndCall({}));
+      });
+
       setSocketEvent(true);
     }
   }, [dispatch, socketEvent, socketing]);
@@ -109,6 +149,8 @@ export default function Home() {
 
   return (
     <>
+      {incomingVoiceCall && <IncomingVoiceCall />}
+      {incomingVideoCall && <IncomingVideoCall />}
       {voiceCall && (
         <div className="h-screen w-screen max-h-full overflow-hidden">
           <VoiceCall />

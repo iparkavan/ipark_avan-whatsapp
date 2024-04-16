@@ -23,7 +23,6 @@ function List() {
         const {
           data: { users, onlineUsers },
         } = await axios(`${GET_INITIAL_CONTACT_ROUTE}/${userInfo?.id}`);
-        console.log("online", users, onlineUsers);
         dispatch(setOnlineUsers(onlineUsers));
         dispatch(setUserContacts(users));
       } catch (error) {}
