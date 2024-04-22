@@ -44,11 +44,10 @@ const Container: React.FC<ContainerProps> = ({ data }) => {
         const {
           data: { token: returnedToken },
         } = await axios.get(`${GET_CALL_TOKEN}/${userInfo?.id}`);
-        alert(returnedToken)
-        console.log(returnedToken)
+        console.log(returnedToken);
         setToken(returnedToken);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     };
     getToken();
@@ -67,14 +66,14 @@ const Container: React.FC<ContainerProps> = ({ data }) => {
           zg.on(
             "roomStreamUpdate",
             async (roomId, updateType, streamList, extendedData) => {
-              if (updateType == "ADD") {
+              if (updateType === "ADD") {
                 const rmVideo = document.getElementById("remote-video");
                 const vd = document.createElement(
                   data?.callType === "video" ? "video" : "audio"
                 );
                 vd.id = streamList[0].streamID;
                 vd.autoplay = true;
-                vd.playsInline = true;
+                // vd.playsInline = true;
                 vd.muted = false;
                 if (rmVideo) {
                   rmVideo.appendChild(vd);
@@ -96,6 +95,7 @@ const Container: React.FC<ContainerProps> = ({ data }) => {
               }
             }
           );
+
           await zg.loginRoom(
             data?.roomId.toString(),
             token,
@@ -123,6 +123,7 @@ const Container: React.FC<ContainerProps> = ({ data }) => {
 
           videoElement.playsInline = true;
 
+          // locaVideo?.appendChild(videoElement);
           locaVideo?.appendChild(videoElement);
 
           const td = document.getElementById("video-local-zego");
@@ -187,7 +188,7 @@ const Container: React.FC<ContainerProps> = ({ data }) => {
           />
         </div>
       )}
-      <div className="my-5 relative" id="remote-vedio">
+      <div className="my-5 relative" id="remote-video">
         <div className="absolute bottom-5 right-5" id="local-audio"></div>
       </div>
       <div

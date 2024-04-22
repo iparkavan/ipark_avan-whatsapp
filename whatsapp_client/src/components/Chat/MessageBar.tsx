@@ -84,12 +84,6 @@ function MessageBar() {
         message,
       });
 
-      // socket?.socket?.current.emit("send-msg", {
-      //   to: currentChatUser?.id,
-      //   from: userInfo?.id,
-      //   message: data.message,
-      // });
-
       socketing.current.emit("send-msg", {
         to: currentChatUser?.id,
         from: userInfo?.id,

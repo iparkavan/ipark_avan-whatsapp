@@ -98,7 +98,8 @@ const generateToken = async (req, res, next) => {
     }
     return res.status(400).send("Userid, appId and Secret Id is required");
   } catch (error) {
-    console.log(error);
+    // console.log(error);
+    // return res.status(400).send(error);
     next(error);
   }
 };

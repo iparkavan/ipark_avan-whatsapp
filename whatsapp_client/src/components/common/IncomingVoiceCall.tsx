@@ -21,6 +21,7 @@ const IncomingVoiceCall = () => {
     });
     dispatch(setIncomingVoiceCall(undefined));
   };
+  
   const rejectCall = () => {
     dispatch(setEndCall({}));
     socket.current.emit("reject-video-call", {
